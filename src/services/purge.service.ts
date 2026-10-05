@@ -8,7 +8,7 @@
  *
  * Ce module peut etre :
  *  - execute a la demande par un agent depuis le tableau de bord,
- *  - execute automatiquement chaque nuit via node-cron (voir app.ts),
+ *  - execute automatiquement chaque nuit via node-cron (voir server.ts),
  *  - lance manuellement en CLI : `npm run purge:run`.
  */
 import cron from "node-cron";
