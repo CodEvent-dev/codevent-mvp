@@ -3,7 +3,7 @@
   "framework": "express",
   "buildCommand": "npm run build:css",
   "functions": {
-    "src/server.ts": {
+    "src/app.ts": {
       "includeFiles": "{views/**,src/db/schema.sql}"
     }
   }

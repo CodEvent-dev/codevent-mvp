@@ -20,11 +20,19 @@ import { separatePublicAndAdminAccess } from "./middlewares/accessSplit.middlewa
 import { publicRouter } from "./routes/public.routes";
 import { authRouter } from "./routes/auth.routes";
 import { adminRouter } from "./routes/admin.routes";
+import { initDatabase } from "./config/database";
+import { ensureDefaultAdminExists } from "./services/auth.service";
+import { scheduleAutomaticPurge } from "./services/purge.service";
+
+let whenReady: Promise<void> = Promise.resolve();
 
 export function createApp(): Express {
   const app = express();
 
   app.disable("x-powered-by");
+  app.use((_req, _res, next) => {
+    whenReady.then(() => next()).catch(next);
+  });
   app.set("query parser", "simple");
   app.set("trust proxy", env.TRUST_PROXY_HOPS);
   app.set("view engine", "ejs");
@@ -145,3 +153,16 @@ export function createApp(): Express {
 
   return app;
 }
+
+initDatabase();
+
+const app = createApp();
+
+whenReady = ensureDefaultAdminExists().then(() => {
+  if (process.env.VERCEL !== "1") {
+    scheduleAutomaticPurge();
+  }
+});
+
+export { whenReady };
+export default app;
