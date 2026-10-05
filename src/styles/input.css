@@ -1,0 +1,157 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-slate-100 text-slate-800 antialiased;
+    background-image:
+      linear-gradient(180deg, #e7eef6 0%, #f4f7fb 220px, #f1f5f9 100%);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  h1, h2, p, li, dd {
+    overflow-wrap: break-word;
+  }
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible,
+  [tabindex]:focus-visible {
+    @apply outline outline-2 outline-offset-2 outline-mairie-500;
+  }
+  label:has(input:focus-visible) {
+    outline: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  .skip-link {
+    position: absolute;
+    left: 0.75rem;
+    top: -3.5rem;
+    z-index: 80;
+    border-radius: 0.75rem;
+    background: #0a1f32;
+    color: #ffffff;
+    padding: 0.65rem 1rem;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+  .skip-link:focus {
+    top: 0.75rem;
+  }
+  .shell { @apply mx-auto w-full max-w-5xl px-3 sm:px-4; }
+  .shell-admin { @apply mx-auto w-full max-w-6xl px-3 sm:px-4; }
+  .btn-primary {
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-mairie-700 px-5 py-3 text-base font-semibold text-white shadow-soft transition hover:bg-mairie-800 active:translate-y-px disabled:cursor-not-allowed disabled:opacity-50 sm:text-sm;
+  }
+  .btn-secondary {
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3 text-base font-semibold text-slate-800 shadow-sm transition hover:border-mairie-300 hover:bg-mairie-50 hover:text-mairie-800 disabled:cursor-not-allowed disabled:opacity-50 sm:text-sm;
+  }
+  .card {
+    @apply rounded-2xl border border-slate-200/80 bg-white p-4 shadow-soft sm:rounded-3xl sm:p-6;
+  }
+  .hero {
+    @apply relative overflow-hidden rounded-2xl bg-mairie-800 px-4 py-6 text-white shadow-lift sm:rounded-3xl sm:px-8 sm:py-8;
+    background-image: radial-gradient(circle at 100% 0%, rgba(196, 163, 90, 0.35), transparent 42%), linear-gradient(135deg, #123b5c, #0a1f32);
+  }
+  .chip {
+    @apply inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-xs font-medium text-white ring-1 ring-white/25;
+  }
+  .icon-tile {
+    @apply flex h-11 w-11 items-center justify-center rounded-2xl bg-mairie-50 text-mairie-700;
+  }
+  .badge {
+    @apply inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold tracking-wide;
+  }
+  .input-field {
+    @apply w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-base text-slate-800 shadow-sm transition placeholder:text-slate-400 focus:border-mairie-400 focus:ring-2 focus:ring-mairie-100;
+  }
+  .nav-link {
+    @apply rounded-lg px-3 py-1.5 text-sm font-medium text-white/80 transition hover:bg-white/10 hover:text-white;
+  }
+  .nav-link-active {
+    @apply bg-white/15 text-white;
+  }
+  .stepper { @apply mb-4 grid grid-cols-3 gap-1.5 sm:mb-6 sm:gap-2; }
+  .step-pill {
+    @apply flex min-h-11 items-center justify-center gap-1.5 rounded-xl border border-transparent bg-white px-1.5 py-2 text-[11px] font-semibold text-slate-600 shadow-sm sm:rounded-2xl sm:px-2 sm:text-sm;
+  }
+  .step-num {
+    @apply flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-slate-100 text-xs text-slate-700;
+  }
+  .step-pill.is-active {
+    @apply border-mairie-200 bg-white text-mairie-800;
+  }
+  .step-pill.is-active .step-num { @apply bg-mairie-700 text-white; }
+  .step-pill.is-done { @apply text-mairie-800; }
+  .step-pill.is-done .step-num { @apply bg-emerald-100 text-emerald-800; }
+  .step-pill.is-idle { @apply text-slate-600; }
+  .category-option {
+    @apply flex min-h-[5.5rem] cursor-pointer flex-col items-start gap-2 rounded-2xl border border-slate-200 bg-slate-50/60 p-3 text-left transition hover:border-mairie-300 hover:bg-white hover:shadow-soft sm:min-h-0 sm:gap-3 sm:p-4;
+  }
+  .category-option:focus-within,
+  .category-option.is-selected {
+    @apply border-mairie-500 bg-white ring-2 ring-mairie-100;
+  }
+  .stat-card {
+    @apply relative overflow-hidden rounded-3xl border border-slate-200/80 bg-white p-5 shadow-soft;
+  }
+  .side-note {
+    @apply rounded-3xl border border-slate-200 bg-white p-5 text-sm text-slate-600 shadow-soft;
+  }
+  .honeypot {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+  .brand-mark {
+    @apply flex h-9 w-9 items-center justify-center rounded-xl bg-or-500 text-mairie-900 shadow-sm;
+  }
+  .screen-admin {
+    background-color: #0a1f32;
+    background-image:
+      radial-gradient(circle at 0% 0%, rgba(196, 163, 90, 0.28), transparent 36%),
+      radial-gradient(circle at 100% 100%, rgba(29, 95, 145, 0.5), transparent 42%),
+      linear-gradient(165deg, #123b5c, #0a1f32);
+    color: #ffffff;
+  }
+  .admin-bar {
+    background-color: #0a1f32;
+    color: #ffffff;
+  }
+  .admin-bar .admin-title {
+    color: #ffffff;
+  }
+  .admin-bar .admin-subtle {
+    color: rgba(255, 255, 255, 0.78);
+  }
+  .admin-user {
+    color: #0a1f32;
+    background-color: #ffffff;
+  }
+  .ticket-cards { @apply space-y-3 md:hidden; }
+  .ticket-table { @apply hidden md:block; }
+}
+
+@media (max-width: 360px) {
+  .hero h1 { font-size: 1.5rem; line-height: 1.25; }
+  .stat-card .text-4xl { font-size: 1.75rem; }
+}

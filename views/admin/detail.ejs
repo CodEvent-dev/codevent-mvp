@@ -1,0 +1,146 @@
+<%- include('../partials/admin-header') %>
+
+<a href="/admin/dashboard" class="text-sm font-medium text-mairie-600 hover:text-mairie-800">&larr; Tableau de bord</a>
+
+<div class="mt-4 mb-8 flex flex-wrap items-center justify-between gap-3">
+  <h1 class="font-mono text-2xl font-bold tracking-tight text-mairie-900"><%= signalement.reference_code %></h1>
+  <%- include('../partials/status-badge', { status: signalement.status, statusLabel: signalement.statusLabel }) %>
+</div>
+
+<div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+  <div class="space-y-6 lg:col-span-2">
+    <div class="card">
+      <h2 class="mb-4 text-base font-semibold text-slate-900">Details</h2>
+      <dl class="mb-5 grid grid-cols-1 gap-4 text-sm sm:grid-cols-2">
+        <div class="rounded-xl bg-slate-50 p-3">
+          <dt class="text-xs uppercase tracking-wide text-slate-500">Categorie citoyenne</dt>
+          <dd class="mt-1 font-medium"><%= signalement.categoryLabel %></dd>
+        </div>
+        <div class="rounded-xl bg-slate-50 p-3">
+          <dt class="text-xs uppercase tracking-wide text-slate-500">Service route</dt>
+          <dd class="mt-1 font-medium"><%= signalement.serviceLabel %></dd>
+        </div>
+        <div class="rounded-xl bg-slate-50 p-3">
+          <dt class="text-xs uppercase tracking-wide text-slate-500">Agent affecte</dt>
+          <dd class="mt-1 font-medium"><%= signalement.assigned_agent_username || 'Non designe' %></dd>
+        </div>
+        <div class="rounded-xl bg-slate-50 p-3">
+          <dt class="text-xs uppercase tracking-wide text-slate-500">Adresse</dt>
+          <dd class="mt-1 font-medium"><%= signalement.address %></dd>
+        </div>
+        <div class="rounded-xl bg-slate-50 p-3">
+          <dt class="text-xs uppercase tracking-wide text-slate-500">Signale le</dt>
+          <dd class="mt-1 font-medium"><%= new Date(signalement.created_at).toLocaleString('fr-FR') %></dd>
+        </div>
+        <div class="rounded-xl bg-slate-50 p-3">
+          <dt class="text-xs uppercase tracking-wide text-slate-500">Mise a jour</dt>
+          <dd class="mt-1 font-medium"><%= new Date(signalement.updated_at).toLocaleString('fr-FR') %></dd>
+        </div>
+        <% const lat = signalement.latitude; const lon = signalement.longitude; %>
+        <% const hasGps = lat != null && lon != null && !(Number(lat) === 0 && Number(lon) === 0); %>
+        <% if (hasGps) { %>
+          <div class="sm:col-span-2 rounded-xl bg-slate-50 p-3">
+            <dt class="text-xs uppercase tracking-wide text-slate-500">Coordonnees GPS</dt>
+            <dd class="mt-1 font-medium">
+              <%= lat %>, <%= lon %>
+              —
+              <a class="text-mairie-600 hover:underline" target="_blank" rel="noopener noreferrer"
+                 href="https://www.openstreetmap.org/?mlat=<%= encodeURIComponent(String(lat)) %>&amp;mlon=<%= encodeURIComponent(String(lon)) %>#map=18/<%= encodeURIComponent(String(lat)) %>/<%= encodeURIComponent(String(lon)) %>">
+                Ouvrir OpenStreetMap
+              </a>
+            </dd>
+          </div>
+        <% } %>
+      </dl>
+
+      <% if (signalement.description) { %>
+        <div class="mb-4">
+          <p class="text-xs uppercase tracking-wide text-slate-500">Description</p>
+          <p class="mt-1"><%= signalement.description %></p>
+        </div>
+      <% } %>
+
+      <% if (signalement.photo_path) { %>
+        <img src="<%= signalement.photo_path %>" alt="Photo du signalement" class="max-h-96 w-full rounded-xl bg-slate-100 object-contain" />
+      <% } else { %>
+        <p class="text-sm italic text-slate-400">Aucune photo jointe.</p>
+      <% } %>
+    </div>
+
+    <div class="card">
+      <h2 class="mb-3 text-base font-semibold text-slate-900">Notes internes</h2>
+      <% if (signalement.internal_notes) { %>
+        <pre class="mb-4 whitespace-pre-wrap rounded-xl bg-slate-50 p-4 text-sm text-slate-700"><%= signalement.internal_notes %></pre>
+      <% } else { %>
+        <p class="mb-4 text-sm italic text-slate-400">Aucune note pour le moment.</p>
+      <% } %>
+
+      <form action="/admin/signalements/<%= signalement.id %>/notes" method="POST">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+        <label for="note" class="mb-1.5 block text-sm font-medium text-slate-700">Ajouter une note</label>
+        <textarea id="note" name="note" class="input-field mb-3" rows="3" required maxlength="2000" placeholder="Ex. : Intervention programmee avec l'equipe voirie jeudi"></textarea>
+        <button type="submit" class="btn-secondary">Enregistrer la note</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="space-y-6">
+    <div class="card">
+      <h2 class="mb-3 text-base font-semibold text-slate-900">Changer le statut</h2>
+      <form action="/admin/signalements/<%= signalement.id %>/statut" method="POST">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+        <label for="status" class="mb-1.5 block text-sm font-medium text-slate-800">Nouveau statut</label>
+        <select id="status" name="status" class="input-field mb-3">
+          <option value="nouveau" <%= signalement.status === 'nouveau' ? 'selected' : '' %>>Nouveau</option>
+          <option value="pris_en_compte" <%= signalement.status === 'pris_en_compte' ? 'selected' : '' %>>Pris en compte</option>
+          <option value="en_cours" <%= signalement.status === 'en_cours' ? 'selected' : '' %>>En cours de traitement</option>
+          <option value="resolu" <%= signalement.status === 'resolu' ? 'selected' : '' %>>Resolu</option>
+          <option value="rejete" <%= signalement.status === 'rejete' ? 'selected' : '' %>>Rejete</option>
+        </select>
+        <button type="submit" class="btn-primary w-full">Mettre a jour</button>
+      </form>
+    </div>
+    <% if (signalement.routing_reason) { %>
+      <div class="card text-sm">
+        <h2 class="mb-2 text-base font-semibold text-slate-900">Routage automatique</h2>
+        <p class="text-xs uppercase tracking-wide text-slate-500">
+          Source : <%= signalement.routing_source || 'ia' %>
+          <% if (signalement.routing_score != null) { %>
+            · confiance <%= Math.round(Number(signalement.routing_score) * 100) %>%
+          <% } %>
+        </p>
+        <p class="mt-2 text-slate-600"><%= signalement.routing_reason %></p>
+      </div>
+    <% } %>
+
+    <% if (isGlobalViewer) { %>
+      <div class="card">
+        <h2 class="mb-3 text-base font-semibold text-slate-900">Reaffecter</h2>
+        <form action="/admin/signalements/<%= signalement.id %>/affectation" method="POST">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+          <label for="assigned_service" class="mb-1 block text-sm font-medium text-slate-700">Service</label>
+          <select id="assigned_service" name="assigned_service" class="input-field mb-3">
+            <% serviceOptions.forEach(function (opt) { %>
+              <option value="<%= opt.value %>" <%= (signalement.assigned_service || signalement.category) === opt.value ? 'selected' : '' %>><%= opt.label %></option>
+            <% }); %>
+          </select>
+          <label for="assigned_agent_id" class="mb-1 block text-sm font-medium text-slate-700">Agent</label>
+          <select id="assigned_agent_id" name="assigned_agent_id" class="input-field mb-3">
+            <option value="">Service (sans agent nomme)</option>
+            <% assignableAgents.forEach(function (agent) { %>
+              <option value="<%= agent.id %>" <%= signalement.assigned_agent_id === agent.id ? 'selected' : '' %>><%= agent.username %></option>
+            <% }); %>
+          </select>
+          <button type="submit" class="btn-secondary w-full">Enregistrer l'affectation</button>
+        </form>
+      </div>
+    <% } %>
+
+    <div class="card text-sm text-slate-500">
+      <p>Code communicable au citoyen</p>
+      <p class="mt-1 font-mono text-lg font-semibold text-mairie-800"><%= signalement.reference_code %></p>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/admin-footer') %>

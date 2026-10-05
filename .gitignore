@@ -1,0 +1,33 @@
+# Dependances
+node_modules/
+
+# Build
+dist/
+public/css/style.css
+
+# Environnement
+.env
+
+# Base de donnees locale (contient aussi la table des sessions)
+data/*.db
+data/*.db-journal
+data/*.db-wal
+data/*.db-shm
+
+# Fichiers uploades par les citoyens (contenu utilisateur, jamais versionne)
+data/uploads/*
+!data/uploads/.gitkeep
+public/uploads/*
+!public/uploads/.gitkeep
+
+# Logs
+*.log
+npm-debug.log*
+
+# Dossiers de travail temporaires
+_tmp_*/
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.vscode/

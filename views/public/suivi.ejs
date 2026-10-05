@@ -1,0 +1,55 @@
+<%- include('../partials/public-header') %>
+
+<section class="hero mb-5 sm:mb-6">
+  <p class="text-xs font-semibold uppercase tracking-[0.16em] text-or-400">Suivi</p>
+  <h1 class="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">Ou en est mon signalement ?</h1>
+  <p class="mt-3 max-w-xl text-base text-white">Saisissez le code recu a l'envoi. Aucun compte n'est demande.</p>
+</section>
+
+<form method="POST" action="/suivi" class="card mb-6">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+  <label for="code" class="mb-1.5 block text-sm font-medium text-slate-800">Code de suivi</label>
+  <div class="flex flex-col gap-3 sm:flex-row">
+    <input type="text" id="code" name="code" class="input-field flex-1 font-mono uppercase" placeholder="TIGY-8492" required maxlength="30" autocapitalize="characters" autocomplete="off" value="<%= typeof prefilledCode !== 'undefined' && prefilledCode ? prefilledCode : '' %>" aria-invalid="<%= error ? 'true' : 'false' %>" <%= error ? 'aria-describedby="suivi-error"' : '' %> />
+    <button type="submit" class="btn-primary whitespace-nowrap">Rechercher</button>
+  </div>
+</form>
+
+<% if (error) { %>
+  <div id="suivi-error" class="mb-6 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-base text-rose-900" role="alert">
+    <%= error %>
+  </div>
+<% } %>
+
+<% if (result) { %>
+  <div class="card" aria-labelledby="suivi-result-title">
+    <h2 id="suivi-result-title" class="sr-only">Resultat du suivi</h2>
+    <div class="mb-5 flex flex-wrap items-center justify-between gap-3">
+      <span class="font-mono text-xl font-bold text-mairie-800"><%= result.referenceCode %></span>
+      <%- include('../partials/status-badge', { status: result.status, statusLabel: result.statusLabel }) %>
+    </div>
+    <dl class="grid grid-cols-1 gap-4 text-sm sm:grid-cols-2">
+      <div class="rounded-xl bg-slate-50 p-3">
+        <dt class="text-xs uppercase tracking-wide text-slate-500">Categorie</dt>
+        <dd class="mt-1 font-medium text-slate-800"><%= result.categoryLabel %></dd>
+      </div>
+      <div class="rounded-xl bg-slate-50 p-3">
+        <dt class="text-xs uppercase tracking-wide text-slate-500">Adresse</dt>
+        <dd class="mt-1 font-medium text-slate-800"><%= result.address %></dd>
+      </div>
+      <div class="rounded-xl bg-slate-50 p-3">
+        <dt class="text-xs uppercase tracking-wide text-slate-500">Signale le</dt>
+        <dd class="mt-1 font-medium text-slate-800"><%= new Date(result.createdAt).toLocaleDateString('fr-FR') %></dd>
+      </div>
+      <div class="rounded-xl bg-slate-50 p-3">
+        <dt class="text-xs uppercase tracking-wide text-slate-500">Mise a jour</dt>
+        <dd class="mt-1 font-medium text-slate-800"><%= new Date(result.updatedAt).toLocaleDateString('fr-FR') %></dd>
+      </div>
+    </dl>
+    <% if (result.photoPath) { %>
+      <img src="<%= result.photoPath %>" alt="Photo du signalement" class="mt-5 max-h-72 w-full rounded-xl object-contain bg-slate-100" />
+    <% } %>
+  </div>
+<% } %>
+
+<%- include('../partials/public-footer') %>

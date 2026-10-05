@@ -1,0 +1,205 @@
+<%- include('../partials/public-header') %>
+
+<section class="mb-6">
+  <h1 class="text-3xl font-bold tracking-tight text-mairie-800">Mentions légales</h1>
+  <p class="mt-2 text-slate-600">Informations imposées par la loi pour la confiance dans l'économie numérique et par le règlement général sur la protection des données.</p>
+</section>
+
+<div class="card space-y-8 text-sm leading-relaxed text-slate-700">
+
+  <section>
+    <h2 class="mb-2 text-base font-semibold text-slate-900">1. Éditeur du site</h2>
+    <p>Le service est édité par <strong><%= communeName %></strong>, personne morale de droit public.</p>
+    <ul class="mt-2 list-disc space-y-1 pl-5">
+      <% if (legal.address) { %><li>Adresse : <%= legal.address %></li><% } %>
+      <% if (legal.phone) { %><li>Téléphone : <%= legal.phone %></li><% } %>
+      <% if (legal.email) { %><li>Courriel : <a class="font-medium text-mairie-700 hover:underline" href="mailto:<%= legal.email %>"><%= legal.email %></a></li><% } %>
+      <% if (legal.siren) { %><li>SIREN : <%= legal.siren %></li><% } %>
+    </ul>
+    <% if (!legal.address || !legal.email) { %>
+      <p class="mt-2 text-slate-500">L'adresse et le contact de la collectivité doivent être publiés avant l'ouverture du service au public.</p>
+    <% } %>
+  </section>
+
+  <section>
+    <h2 class="mb-2 text-base font-semibold text-slate-900">2. Directeur de la publication</h2>
+    <p>
+      <% if (legal.director) { %><%= legal.director %>.<% } else { %>Le maire de la commune, en sa qualité d'autorité territoriale.<% } %>
+      Le directeur de la publication est responsable du contenu mis en ligne au nom de la collectivité.
+    </p>
+  </section>
+
+  <section>
+    <h2 class="mb-2 text-base font-semibold text-slate-900">3. Hébergeur</h2>
+    <% if (legal.hostName) { %>
+      <ul class="list-disc space-y-1 pl-5">
+        <li><%= legal.hostName %></li>
+        <% if (legal.hostAddress) { %><li><%= legal.hostAddress %></li><% } %>
+        <% if (legal.hostPhone) { %><li>Téléphone : <%= legal.hostPhone %></li><% } %>
+      </ul>
+    <% } else { %>
+      <p>L'identité de l'hébergeur (dénomination, adresse et téléphone) sera indiquée ici avant l'ouverture du service au public. L'hébergement est prévu en France.</p>
+    <% } %>
+  </section>
+
+  <section>
+    <h2 class="mb-2 text-base font-semibold text-slate-900">4. Objet du service</h2>
+    <p>
+      Le site permet à toute personne de signaler un désordre sur la voie publique ou les espaces communaux
+      (voirie, éclairage, propreté, espaces verts, bâtiments communaux ou autre), sans création de compte, puis d'en suivre
+      le traitement au moyen d'un code aléatoire.
+    </p>
+  </section>
+
+  <section>
+    <h2 class="mb-2 text-base font-semibold text-slate-900">5. Responsable du traitement</h2>
+    <p>
+      Le responsable du traitement des données personnelles est <strong><%= communeName %></strong><% if (legal.address) { %>, <%= legal.address %><% } %>.
+      <% if (legal.email) { %>Contact : <a class="font-medium text-mairie-700 hover:underline" href="mailto:<%= legal.email %>"><%= legal.email %></a>.<% } %>
+    </p>
+  </section>
+
+  <section>
+    <h2 class="mb-2 text-base font-semibold text-slate-900">6. Délégué à la protection des données</h2>
+    <p>
+      En tant qu'autorité publique, la commune désigne un délégué à la protection des données.
+      <% if (legal.dpo) { %>Vous pouvez le joindre à : <%= legal.dpo %>.<% } else if (legal.email) { %>
+      Les demandes sont adressées à <a class="font-medium text-mairie-700 hover:underline" href="mailto:<%= legal.email %>"><%= legal.email %></a>, qui les transmet au délégué.
+      <% } else { %>Les demandes lui sont transmises par l'accueil de la mairie.<% } %>
+    </p>
+  </section>
+
+  <section>
+    <h2 class="mb-2 text-base font-semibold text-slate-900">7. Finalités et base légale</h2>
+    <p>Les données sont traitées uniquement pour :</p>
+    <ul class="mt-2 list-disc space-y-1 pl-5">
+      <li>enregistrer et localiser le signalement ;</li>
+      <li>permettre aux services techniques de le traiter et d'en suivre l'état ;</li>
+      <li>vous permettre de consulter ce suivi grâce au code remis ;</li>
+      <li>protéger le service contre les abus (limitation du nombre d'envois).</li>
+    </ul>
+    <p class="mt-2">
+      La base légale est l'exécution d'une mission d'intérêt public (article 6, paragraphe 1, point e, du RGPD),
+      au titre des compétences communales en matière de voirie et d'entretien des espaces publics.
+      Un routage interne, exécuté uniquement sur le serveur de la commune, oriente le dossier vers le
+      service technique compétent. Cette orientation n'a pas d'effet juridique sur vous : un agent
+      humain traite ensuite le signalement (prise en compte, intervention, clôture).
+    </p>
+  </section>
+
+  <section>
+    <h2 class="mb-2 text-base font-semibold text-slate-900">8. Données collectées</h2>
+    <p>Le signalement ne demande ni nom, ni adresse électronique, ni création de compte. Sont enregistrés :</p>
+    <ul class="mt-2 list-disc space-y-1 pl-5">
+      <li>la catégorie du problème et, pour « Autre », la précision demandée ;</li>
+      <li>l'adresse ou le lieu indiqué, et les coordonnées GPS si vous utilisez ce bouton ;</li>
+      <li>une description et une photo, toutes deux facultatives ;</li>
+      <li>un code de suivi généré aléatoirement ;</li>
+      <li>une empreinte technique de l'adresse IP (HMAC), jamais l'adresse IP en clair, uniquement pour limiter les abus ;</li>
+      <li>les notes internes des agents, qui ne vous sont pas montrées.</li>
+    </ul>
+    <p class="mt-2">
+      La description, la photo et le GPS sont facultatifs. Sans adresse ou lieu, le signalement ne peut pas être enregistré.
+      Si vous activez le GPS, une précision d'au plus 10 mètres est exigée. À défaut de position assez précise,
+      les coordonnées sont déduites de l'adresse saisie.
+    </p>
+  </section>
+
+  <section>
+    <h2 class="mb-2 text-base font-semibold text-slate-900">9. Destinataires</h2>
+    <p>Les données sont accessibles aux seuls agents municipaux habilités des services techniques. Elles peuvent aussi être confiées :</p>
+    <ul class="mt-2 list-disc space-y-1 pl-5">
+      <li>à l'hébergeur du site, qui agit pour le compte de la commune et ne les utilise pas pour son propre compte ;</li>
+      <li>à la Base Adresse Nationale et à geo.api.gouv.fr (services de l'État), uniquement pour transformer une position en adresse, ou une adresse en position ;</li>
+      <li>à OpenStreetMap, uniquement lorsqu'aucun numéro officiel n'existe à proximité, pour obtenir le nom de la voie au point indiqué.</li>
+    </ul>
+    <p class="mt-2">Le dossier complet (photo, description, notes) n'est pas transmis à ces services d'adresse.</p>
+  </section>
+
+  <section>
+    <h2 class="mb-2 text-base font-semibold text-slate-900">10. Transferts hors de l'Union européenne</h2>
+    <p>
+      Les services d'adresse de l'État sont situés en France. Lorsque le nom de la voie est demandé à OpenStreetMap,
+      cette requête peut être traitée au Royaume-Uni, pays couvert par une décision d'adéquation de la Commission européenne.
+      Aucun autre transfert hors de l'Union européenne n'est organisé.
+    </p>
+  </section>
+
+  <section>
+    <h2 class="mb-2 text-base font-semibold text-slate-900">11. Durée de conservation</h2>
+    <ul class="list-disc space-y-1 pl-5">
+      <li>Le signalement est conservé pendant son instruction.</li>
+      <li>Une fois résolu ou rejeté, il est conservé <%= retentionDays %> jours, puis anonymisé : la photo, la description, les notes internes, l'adresse précise, les coordonnées et l'empreinte IP sont supprimées. Il ne reste que la catégorie, les dates et le statut, sans lien avec une personne.</li>
+      <li>Le cookie de session expire au plus tard au bout de <%= sessionHours %> heures d'inactivité.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2 class="mb-2 text-base font-semibold text-slate-900">12. Cookies</h2>
+    <p>
+      Le site ne dépose aucun cookie publicitaire, statistique ou de traçage, et n'utilise aucun traceur tiers.
+      Un cookie technique strictement nécessaire est déposé pour sécuriser les formulaires (jeton anti-falsification)
+      et, pour les agents, pour maintenir leur session. Ce cookie est httpOnly et SameSite=Strict.
+      Il est indispensable au service demandé : aucun bandeau de consentement n'est requis.
+    </p>
+  </section>
+
+  <section>
+    <h2 class="mb-2 text-base font-semibold text-slate-900">13. Vos droits</h2>
+    <p>Vous pouvez demander à la commune :</p>
+    <ul class="mt-2 list-disc space-y-1 pl-5">
+      <li>l'accès aux données liées à votre code de suivi ;</li>
+      <li>leur rectification si elles sont inexactes ;</li>
+      <li>leur effacement anticipé, ou la limitation du traitement ;</li>
+      <li>d'opposition au traitement, pour des raisons tenant à votre situation particulière. La commune peut le poursuivre si des motifs impérieux d'intérêt public le justifient.</li>
+    </ul>
+    <p class="mt-2">
+      Le droit à la portabilité ne s'applique pas à ce traitement, fondé sur une mission d'intérêt public.
+      Adressez votre demande<% if (legal.email) { %> à <a class="font-medium text-mairie-700 hover:underline" href="mailto:<%= legal.email %>"><%= legal.email %></a> ou<% } %>
+      par courrier à la mairie, en indiquant votre code de suivi. Une réponse vous est due dans un délai d'un mois.
+    </p>
+    <p class="mt-2">
+      Vous pouvez aussi introduire une réclamation auprès de la Commission nationale de l'informatique et des libertés (CNIL),
+      3 place de Fontenoy, TSA 80715, 75334 Paris Cedex 07, ou sur cnil.fr.
+    </p>
+  </section>
+
+  <section>
+    <h2 class="mb-2 text-base font-semibold text-slate-900">14. Sécurité</h2>
+    <p>
+      L'accès des agents est protégé par un mot de passe haché et une session limitée.
+      Les photos sont réenregistrées dans un format image, sans les données d'origine de l'appareil.
+      Les échanges doivent être chiffrés en HTTPS dès la mise en ligne.
+    </p>
+  </section>
+
+  <section>
+    <h2 class="mb-2 text-base font-semibold text-slate-900">15. Propriété intellectuelle</h2>
+    <p>
+      Les textes et l'interface du service sont la propriété de la commune ou de son prestataire, selon le contrat de cession.
+      Toute reproduction non autorisée est interdite. Les photographies déposées par les usagers sont utilisées
+      seulement pour traiter le signalement correspondant.
+    </p>
+  </section>
+
+  <section>
+    <h2 class="mb-2 text-base font-semibold text-slate-900">16. Accessibilité</h2>
+    <p>
+      Le service est conçu pour être utilisable au clavier, avec un contraste lisible et sans animation imposée.
+      Une difficulté d'accès peut être signalée à la mairie<% if (legal.email) { %> (<a class="font-medium text-mairie-700 hover:underline" href="mailto:<%= legal.email %>"><%= legal.email %></a>)<% } %>.
+      La déclaration d'accessibilité prévue pour les communications des communes sera publiée après audit.
+    </p>
+  </section>
+
+  <section>
+    <h2 class="mb-2 text-base font-semibold text-slate-900">17. Médiation et litiges</h2>
+    <p>
+      Pour un différend relatif au fonctionnement du service, vous pouvez saisir la mairie.
+      À défaut de réponse satisfaisante, le Défenseur des droits peut être saisi (defenseurdesdroits.fr).
+      Le tribunal administratif territorialement compétent connaît des litiges avec la commune.
+    </p>
+  </section>
+
+</div>
+
+<%- include('../partials/public-footer') %>

@@ -1,0 +1,109 @@
+<%- include('../partials/admin-header') %>
+
+<section class="hero mb-6">
+  <p class="text-xs font-semibold uppercase tracking-[0.16em] text-or-400">Administration</p>
+  <h1 class="mt-2 text-3xl font-bold tracking-tight">Agents et specialites</h1>
+  <p class="mt-2 max-w-2xl text-sm text-white/75">
+    Chaque agent n'accede qu'aux tickets de ses services. Les administrateurs conservent la vue globale.
+  </p>
+</section>
+
+<% if (notice) { %>
+  <div class="mb-6 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800"><%= notice %></div>
+<% } %>
+
+<div class="card mb-8">
+  <h2 class="mb-4 text-base font-semibold text-slate-900">Creer un compte</h2>
+  <form action="/admin/agents" method="POST" class="grid grid-cols-1 gap-4 md:grid-cols-2">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+    <div>
+      <label class="mb-1 block text-xs font-medium text-slate-600" for="new-username">Identifiant</label>
+      <input id="new-username" name="username" class="input-field" required minlength="3" maxlength="32" autocomplete="off" />
+    </div>
+    <div>
+      <label class="mb-1 block text-xs font-medium text-slate-600" for="new-fullname">Nom affiche</label>
+      <input id="new-fullname" name="fullName" class="input-field" maxlength="80" />
+    </div>
+    <div>
+      <label class="mb-1 block text-xs font-medium text-slate-600" for="new-password">Mot de passe (10 caracteres min.)</label>
+      <input id="new-password" type="password" name="password" class="input-field" required minlength="10" maxlength="128" autocomplete="new-password" />
+    </div>
+    <div>
+      <label class="mb-1 block text-xs font-medium text-slate-600" for="new-role">Role</label>
+      <select id="new-role" name="role" class="input-field">
+        <option value="agent">Agent de service</option>
+        <option value="admin">Administrateur / maire</option>
+      </select>
+    </div>
+    <fieldset class="md:col-span-2">
+      <legend class="mb-2 text-xs font-medium text-slate-600">Specialites (obligatoires pour un agent)</legend>
+      <div class="flex flex-wrap gap-3">
+        <% categories.forEach(function (cat) { %>
+          <label class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm">
+            <input type="checkbox" name="specialty_<%= cat.value %>" value="1" />
+            <%= cat.label %>
+          </label>
+        <% }); %>
+      </div>
+    </fieldset>
+    <div class="md:col-span-2">
+      <button type="submit" class="btn-primary">Creer le compte</button>
+    </div>
+  </form>
+</div>
+
+<div class="space-y-4">
+  <% agents.forEach(function (agent) { %>
+    <form action="/admin/agents/<%= agent.id %>" method="POST" class="card">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+      <div class="mb-4 flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <p class="font-semibold text-slate-900"><%= agent.full_name || agent.username %></p>
+          <p class="text-sm text-slate-500">@<%= agent.username %> · <%= agent.role === 'admin' ? 'Administrateur' : 'Agent' %> · <%= agent.openTickets %> ticket(s) ouvert(s)</p>
+        </div>
+        <span class="badge <%= agent.active ? 'bg-emerald-50 text-emerald-800' : 'bg-rose-50 text-rose-800' %>">
+          <%= agent.active ? 'Actif' : 'Desactive' %>
+        </span>
+      </div>
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div>
+          <label class="mb-1 block text-xs font-medium text-slate-600">Nom affiche</label>
+          <input name="fullName" class="input-field" value="<%= agent.full_name || '' %>" maxlength="80" />
+        </div>
+        <div>
+          <label class="mb-1 block text-xs font-medium text-slate-600">Nouveau mot de passe (optionnel)</label>
+          <input type="password" name="password" class="input-field" minlength="10" maxlength="128" autocomplete="new-password" />
+        </div>
+        <div>
+          <label class="mb-1 block text-xs font-medium text-slate-600">Role</label>
+          <select name="role" class="input-field">
+            <option value="agent" <%= agent.role === 'agent' ? 'selected' : '' %>>Agent de service</option>
+            <option value="admin" <%= agent.role === 'admin' ? 'selected' : '' %>>Administrateur / maire</option>
+          </select>
+        </div>
+        <div class="flex items-end">
+          <label class="inline-flex items-center gap-2 text-sm text-slate-700">
+            <input type="checkbox" name="active" value="1" <%= agent.active ? 'checked' : '' %> />
+            Compte actif
+          </label>
+        </div>
+        <fieldset class="md:col-span-2">
+          <legend class="mb-2 text-xs font-medium text-slate-600">Specialites</legend>
+          <div class="flex flex-wrap gap-3">
+            <% categories.forEach(function (cat) { %>
+              <label class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm">
+                <input type="checkbox" name="specialty_<%= cat.value %>" value="1" <%= agent.specialties.indexOf(cat.value) !== -1 ? 'checked' : '' %> />
+                <%= cat.label %>
+              </label>
+            <% }); %>
+          </div>
+        </fieldset>
+      </div>
+      <div class="mt-4">
+        <button type="submit" class="btn-secondary">Enregistrer</button>
+      </div>
+    </form>
+  <% }); %>
+</div>
+
+<%- include('../partials/admin-footer') %>

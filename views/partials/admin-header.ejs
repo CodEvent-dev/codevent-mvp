@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %></title>
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#0a1f32" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body class="min-h-screen flex flex-col bg-slate-50">
+  <a href="#contenu-principal" class="skip-link">Aller au contenu</a>
+  <header class="admin-bar sticky top-0 z-20 border-b border-white/10">
+    <div class="shell-admin flex flex-wrap items-center justify-between gap-3 py-3">
+      <a href="/admin/dashboard" class="flex items-center gap-3">
+        <span class="brand-mark" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 32 32" fill="currentColor"><path d="M16 6l8 5v3H8V11l8-5zm-7 10h2v8H9v-8zm6 0h2v8h-2v-8zm6 0h2v8h-2v-8zM8 25h16v2H8z"/></svg>
+        </span>
+        <span>
+          <span class="admin-title block text-sm font-semibold leading-tight"><%= communeName %></span>
+          <span class="admin-subtle block text-[11px] font-medium">Espace services techniques</span>
+        </span>
+      </a>
+      <% if (typeof agentUsername !== 'undefined' && agentUsername) { %>
+        <div class="flex flex-wrap items-center justify-end gap-2 text-sm">
+          <nav class="flex flex-wrap items-center gap-1" aria-label="Espace agent">
+            <a href="/admin/dashboard" class="nav-link <%= currentPath === '/admin/dashboard' ? 'nav-link-active' : '' %>" <%= currentPath === '/admin/dashboard' ? 'aria-current="page"' : '' %>>Tableau de bord</a>
+            <% if (typeof currentAgentRole !== 'undefined' && currentAgentRole === 'admin') { %>
+              <a href="/admin/agents" class="nav-link <%= currentPath === '/admin/agents' ? 'nav-link-active' : '' %>" <%= currentPath === '/admin/agents' ? 'aria-current="page"' : '' %>>Agents</a>
+            <% } %>
+          </nav>
+          <span class="admin-user rounded-full px-3 py-1 text-xs font-semibold">
+            <%= currentAgentRole === 'admin' ? 'Admin' : 'Agent' %> <%= agentUsername %>
+          </span>
+          <form action="/admin/logout" method="POST">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+            <button type="submit" class="min-h-11 rounded-lg border border-white/25 bg-white/10 px-3 py-1.5 text-sm font-semibold text-white hover:bg-white/20">Se deconnecter</button>
+          </form>
+        </div>
+      <% } %>
+    </div>
+  </header>
+  <main id="contenu-principal" class="shell-admin flex-1 py-5 sm:py-8" tabindex="-1">

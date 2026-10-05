@@ -1,0 +1,11 @@
+<%
+  const badgeColors = {
+    nouveau: "bg-sky-100 text-sky-800 ring-1 ring-sky-200",
+    pris_en_compte: "bg-amber-100 text-amber-900 ring-1 ring-amber-200",
+    en_cours: "bg-orange-100 text-orange-900 ring-1 ring-orange-200",
+    resolu: "bg-emerald-100 text-emerald-800 ring-1 ring-emerald-200",
+    rejete: "bg-rose-100 text-rose-800 ring-1 ring-rose-200",
+  };
+  const badgeClass = badgeColors[status] || "bg-slate-100 text-slate-700";
+%>
+<span class="badge <%= badgeClass %>"><span class="sr-only">Statut : </span><%= statusLabel %></span>

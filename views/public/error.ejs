@@ -1,0 +1,14 @@
+<%- include('../partials/public-header') %>
+
+<div class="card mx-auto max-w-lg text-center">
+  <p class="text-sm font-semibold uppercase tracking-wider text-rose-400">Incident</p>
+  <h1 class="mt-2 text-2xl font-bold text-mairie-800">Une erreur est survenue</h1>
+  <p class="mt-2 mb-6 text-base text-slate-700"><%= message %></p>
+  <% if (typeof currentAgent !== 'undefined' && currentAgent) { %>
+    <a href="/admin/dashboard" class="btn-primary">Retour au tableau de bord</a>
+  <% } else { %>
+    <a href="/" class="btn-primary">Retour a l'accueil</a>
+  <% } %>
+</div>
+
+<%- include('../partials/public-footer') %>

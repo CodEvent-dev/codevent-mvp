@@ -1,0 +1,21 @@
+<%- include('../partials/public-header') %>
+
+<div class="card mx-auto max-w-lg text-center" role="status" aria-live="polite">
+  <div class="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-50 text-3xl" aria-hidden="true">✓</div>
+  <h1 class="text-2xl font-bold text-mairie-800">Signalement envoye</h1>
+  <p class="mt-2 text-base text-slate-700">Merci. Conservez ce code : c'est le seul moyen de suivre l'avancement.</p>
+
+  <% if (referenceCode) { %>
+    <div class="mt-6 inline-block rounded-2xl border border-mairie-100 bg-mairie-50 px-6 py-4 sm:px-8">
+      <p class="text-sm font-medium text-mairie-800">Code de suivi</p>
+      <p class="mt-1 font-mono text-2xl font-bold tracking-wide text-mairie-900 sm:text-3xl"><%= referenceCode %></p>
+    </div>
+  <% } %>
+
+  <div class="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+    <a href="/suivi<%= referenceCode ? ('?code=' + encodeURIComponent(referenceCode)) : '' %>" class="btn-primary">Suivre ce signalement</a>
+    <a href="/" class="btn-secondary">Nouveau signalement</a>
+  </div>
+</div>
+
+<%- include('../partials/public-footer') %>

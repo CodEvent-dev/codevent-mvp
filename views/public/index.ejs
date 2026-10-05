@@ -1,0 +1,135 @@
+<%- include('../partials/public-header') %>
+
+<section class="hero mb-5 sm:mb-6">
+  <p class="text-xs font-semibold uppercase tracking-[0.16em] text-or-400">Service municipal</p>
+  <h1 class="mt-2 max-w-xl text-2xl font-bold tracking-tight sm:text-4xl">Un probleme sur la voie publique ?</h1>
+  <p class="mt-3 max-w-xl text-base leading-relaxed text-white">
+    Signalez-le en trois etapes. Aucun compte : vous repartez avec un code pour suivre le traitement.
+  </p>
+  <div class="mt-5 flex flex-wrap gap-2">
+    <span class="chip">Sans creation de compte</span>
+    <span class="chip">Code de suivi personnel</span>
+    <span class="chip">Heberge en France</span>
+  </div>
+</section>
+
+<p id="step-live" class="sr-only" aria-live="polite"></p>
+
+<ol class="stepper" id="step-indicator" aria-label="Etapes du formulaire">
+  <li class="step-pill is-active" data-step="1" aria-current="step"><span class="step-num" aria-hidden="true">1</span> Categorie</li>
+  <li class="step-pill is-idle" data-step="2"><span class="step-num" aria-hidden="true">2</span> Lieu</li>
+  <li class="step-pill is-idle" data-step="3"><span class="step-num" aria-hidden="true">3</span> Details</li>
+</ol>
+
+<div id="form-error" class="hidden mb-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-base text-rose-900" role="alert" aria-live="assertive" tabindex="-1"></div>
+
+<div class="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_17rem]">
+<form id="signalement-form" class="card" novalidate aria-labelledby="form-title">
+  <h2 id="form-title" class="sr-only">Formulaire de signalement</h2>
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+  <div class="honeypot" hidden aria-hidden="true">
+    <label aria-hidden="true">Ne pas remplir<input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" /></label>
+  </div>
+
+  <fieldset data-step-panel="1">
+    <legend class="mb-4 text-lg font-semibold text-slate-900">Quel type de probleme ?</legend>
+    <div class="grid grid-cols-2 gap-2 sm:gap-3 sm:grid-cols-3" role="radiogroup" aria-labelledby="category-group-label">
+      <p id="category-group-label" class="sr-only">Categorie du signalement</p>
+      <label class="category-option">
+        <input type="radio" name="category" value="voirie" class="sr-only" required />
+        <span class="icon-tile" aria-hidden="true"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M4 16h16M6 16V8l6-3 6 3v8"/><path d="M9 16v-3h6v3"/></svg></span>
+        <span><span class="block text-sm font-semibold text-slate-900">Voirie</span><span class="text-xs text-slate-600">Nids-de-poule, chaussee</span></span>
+      </label>
+      <label class="category-option">
+        <input type="radio" name="category" value="eclairage" class="sr-only" />
+        <span class="icon-tile" aria-hidden="true"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 1 4 10c-.7.8-1 1.6-1 2.5h-6c0-.9-.3-1.7-1-2.5A6 6 0 0 1 12 3z"/></svg></span>
+        <span><span class="block text-sm font-semibold text-slate-900">Eclairage</span><span class="text-xs text-slate-600">Lampadaire en panne</span></span>
+      </label>
+      <label class="category-option">
+        <input type="radio" name="category" value="proprete" class="sr-only" />
+        <span class="icon-tile" aria-hidden="true"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M4 7h16M9 7V5h6v2M7 7l1 13h8l1-13"/></svg></span>
+        <span><span class="block text-sm font-semibold text-slate-900">Proprete</span><span class="text-xs text-slate-600">Depot sauvage</span></span>
+      </label>
+      <label class="category-option">
+        <input type="radio" name="category" value="espaces_verts" class="sr-only" />
+        <span class="icon-tile" aria-hidden="true"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 21V11M8 21h8M12 11c-3 0-5-2-5-4 2 0 4 1 5 3 1-2 3-3 5-3 0 2-2 4-5 4z"/></svg></span>
+        <span><span class="block text-sm font-semibold text-slate-900">Espaces verts</span><span class="text-xs text-slate-600">Parcs et arbres</span></span>
+      </label>
+      <label class="category-option">
+        <input type="radio" name="category" value="batiments" class="sr-only" />
+        <span class="icon-tile" aria-hidden="true"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M4 20h16M6 20V8l6-4 6 4v12M10 20v-5h4v5"/></svg></span>
+        <span><span class="block text-sm font-semibold text-slate-900">Batiments</span><span class="text-xs text-slate-600">Ecole, mairie, salle</span></span>
+      </label>
+      <label class="category-option">
+        <input type="radio" name="category" value="autre" class="sr-only" />
+        <span class="icon-tile" aria-hidden="true"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M8 7h8M8 12h8M8 17h5"/><rect x="4" y="3" width="16" height="18" rx="2"/></svg></span>
+        <span><span class="block text-sm font-semibold text-slate-900">Autre</span><span class="text-xs text-slate-600">A preciser</span></span>
+      </label>
+    </div>
+
+    <div id="other-precision-block" class="mt-5 hidden">
+      <label for="other-precision" class="mb-1.5 block text-sm font-medium text-slate-800">
+        Precisez le type de probleme <span class="text-rose-700" aria-hidden="true">*</span>
+      </label>
+      <input type="text" id="other-precision" name="other_precision" class="input-field" maxlength="200" autocomplete="off" placeholder="Ex. : banc public casse, panneau illisible..." aria-describedby="other-precision-help" />
+      <p id="other-precision-help" class="mt-1.5 text-sm text-slate-600">Obligatoire pour la categorie Autre (3 caracteres minimum).</p>
+    </div>
+    <div class="mt-6 flex justify-end sm:mt-8">
+      <button type="button" class="btn-primary" data-action="next">Continuer</button>
+    </div>
+  </fieldset>
+
+  <fieldset data-step-panel="2" hidden>
+    <legend class="mb-4 text-lg font-semibold text-slate-900">Ou se situe le probleme ?</legend>
+    <label for="address" class="mb-1.5 block text-sm font-medium text-slate-800">Adresse ou lieu-dit</label>
+    <input type="text" id="address" name="address" class="input-field" placeholder="Ex. : 12 rue de la Mairie" required maxlength="255" autocomplete="street-address" aria-describedby="address-help" />
+    <p id="address-help" class="mt-1.5 text-sm text-slate-600">Saisissez une adresse. Le GPS ne fonctionne bien que sur un telephone a l'exterieur.</p>
+
+    <button type="button" id="geoloc-button" class="btn-secondary mt-4 w-full sm:w-auto" aria-describedby="geoloc-status address-help">
+      Utiliser ma position GPS
+    </button>
+    <p id="geoloc-status" class="mt-2 text-sm text-slate-700" aria-live="polite"></p>
+
+    <input type="hidden" name="latitude" id="latitude" />
+    <input type="hidden" name="longitude" id="longitude" />
+    <input type="hidden" name="gps_accuracy" id="gps-accuracy" />
+
+    <div class="mt-6 flex justify-between gap-3 sm:mt-8">
+      <button type="button" class="btn-secondary" data-action="prev">Retour</button>
+      <button type="button" class="btn-primary" data-action="next">Continuer</button>
+    </div>
+  </fieldset>
+
+  <fieldset data-step-panel="3" hidden>
+    <legend class="mb-4 text-lg font-semibold text-slate-900">Photo et description</legend>
+
+    <label for="photo" class="mb-1.5 block text-sm font-medium text-slate-800">Photo (recommandee)</label>
+    <input type="file" id="photo" name="photo" accept="image/jpeg,image/png,image/webp,image/gif" class="input-field file:mr-3 file:rounded-lg file:border-0 file:bg-mairie-50 file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-mairie-800" aria-describedby="photo-help" />
+    <p id="photo-help" class="mt-1.5 text-sm text-slate-600">Facultatif. La photo est reduite automatiquement avant l'envoi.</p>
+    <img id="photo-preview" class="mt-4 hidden max-h-52 rounded-xl border border-slate-100 object-contain" alt="Apercu de la photo choisie" />
+
+    <label for="description" class="mb-1.5 mt-5 block text-sm font-medium text-slate-800">Description courte</label>
+    <textarea id="description" name="description" class="input-field" rows="3" maxlength="1000" placeholder="Decrivez le probleme en quelques mots" aria-describedby="description-help"></textarea>
+    <p id="description-help" class="mt-1.5 text-sm text-slate-600">Facultatif, 1000 caracteres maximum.</p>
+
+    <div class="mt-6 flex justify-between gap-3 sm:mt-8">
+      <button type="button" class="btn-secondary" data-action="prev">Retour</button>
+      <button type="submit" class="btn-primary" id="submit-button">Envoyer le signalement</button>
+    </div>
+  </fieldset>
+</form>
+<aside class="side-note space-y-4" aria-labelledby="howto-title">
+  <h2 id="howto-title" class="text-base font-semibold text-mairie-900">Comment ca se passe</h2>
+  <ol class="space-y-3 text-base">
+    <li><span class="font-semibold text-slate-900">1. Vous decrivez</span><br />Categorie, lieu, photo si vous en avez une.</li>
+    <li><span class="font-semibold text-slate-900">2. Vous gardez le code</span><br />Exemple : TIGY-8492. C'est votre seul identifiant.</li>
+    <li><span class="font-semibold text-slate-900">3. La mairie traite</span><br />Les services techniques mettent a jour le statut.</li>
+  </ol>
+  <a href="/suivi" class="inline-block min-h-11 font-semibold text-mairie-800 underline">Deja un code ? Suivre un signalement</a>
+</aside>
+</div>
+
+<script src="/js/image-compress.js"></script>
+<script src="/js/signalement-form.js"></script>
+
+<%- include('../partials/public-footer') %>
