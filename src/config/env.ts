@@ -91,12 +91,15 @@ if (IS_PRODUCTION) {
 }
 
 const root = process.cwd();
+const onVercel = process.env.VERCEL === "1";
 
 export const env = {
   ...parsed.data,
   ROOT_DIR: root,
-  DB_PATH_ABS: path.resolve(root, parsed.data.DB_PATH),
-  UPLOAD_DIR_ABS: path.resolve(root, parsed.data.UPLOAD_DIR),
+  // Le disque Vercel est en lecture seule, sauf /tmp (efface a froid).
+  DB_PATH_ABS: onVercel ? "/tmp/mairieconnect.db" : path.resolve(root, parsed.data.DB_PATH),
+  UPLOAD_DIR_ABS: onVercel ? "/tmp/mairieconnect-uploads" : path.resolve(root, parsed.data.UPLOAD_DIR),
+  TRUST_PROXY_HOPS: onVercel ? Math.max(parsed.data.TRUST_PROXY_HOPS, 1) : parsed.data.TRUST_PROXY_HOPS,
   IS_PRODUCTION,
   SESSION_COOKIE_NAME: IS_PRODUCTION ? "__Host-mairieconnect" : "mairieconnect.sid",
   PUBLIC_HOST: parsed.data.PUBLIC_HOST.replace(/:\d+$/, ""),

@@ -5,7 +5,7 @@
   "description": "MairieConnect - Application souveraine de signalements citoyens pour collectivite (RGPD, eco-concue, securisee).",
   "license": "UNLICENSED",
   "engines": {
-    "node": ">=22.5.0"
+    "node": "22.x"
   },
   "scripts": {
     "dev": "tsx watch src/server.ts",

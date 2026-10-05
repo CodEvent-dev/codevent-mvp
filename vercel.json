@@ -1,0 +1,10 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "express",
+  "buildCommand": "npm run build:css",
+  "functions": {
+    "src/server.ts": {
+      "includeFiles": "{views/**,src/db/schema.sql}"
+    }
+  }
+}

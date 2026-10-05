@@ -1,34 +1,41 @@
 /**
  * Point d'entree du serveur MairieConnect.
- * Initialise la base de donnees, le compte admin par defaut, la purge
- * RGPD automatique planifiee, puis demarre le serveur HTTP Express.
  *
- * En production, ce processus Node.js est place derriere Apache/Nginx
- * (reverse-proxy) qui gere le certificat HTTPS (cf. README.md, section
- * deploiement o2switch).
+ * Vercel detecte Express ici : le fichier importe express et exporte
+ * l'application (pas de listen). En local et derriere Apache/o2switch,
+ * le meme fichier ecoute le port.
  */
+import express from "express";
 import { env } from "./config/env";
 import { initDatabase } from "./config/database";
 import { ensureDefaultAdminExists } from "./services/auth.service";
 import { scheduleAutomaticPurge } from "./services/purge.service";
 import { createApp } from "./app";
 
-async function bootstrap(): Promise<void> {
-  initDatabase();
-  await ensureDefaultAdminExists();
-  scheduleAutomaticPurge();
+const onVercel = process.env.VERCEL === "1";
 
-  const app = createApp();
+initDatabase();
 
-  app.listen(env.PORT, () => {
-    console.log(
-      `[MairieConnect] Serveur demarre sur http://localhost:${env.PORT} ` +
-        `(environnement: ${env.NODE_ENV}, commune: ${env.COMMUNE_NAME})`
-    );
-  });
+const app = createApp();
+
+if (!express.application) {
+  throw new Error("Express n'a pas pu etre charge.");
 }
 
-bootstrap().catch((error) => {
-  console.error("[MairieConnect] Echec du demarrage du serveur :", error);
-  process.exit(1);
-});
+export default app;
+
+ensureDefaultAdminExists()
+  .then(() => {
+    if (onVercel) return;
+    scheduleAutomaticPurge();
+    app.listen(env.PORT, () => {
+      console.log(
+        `[MairieConnect] Serveur demarre sur http://localhost:${env.PORT} ` +
+          `(environnement: ${env.NODE_ENV}, commune: ${env.COMMUNE_NAME})`
+      );
+    });
+  })
+  .catch((error) => {
+    console.error("[MairieConnect] Echec du demarrage du serveur :", error);
+    if (!onVercel) process.exit(1);
+  });
