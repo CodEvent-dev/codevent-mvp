@@ -239,6 +239,26 @@ Verifier apres mise en ligne :
   `https://agents.ma-commune.lan` ouvre la connexion agent ;
 - depuis Internet, cette seconde adresse ne repond pas.
 
+### 4.5. Hebergement Render
+
+Le fichier `render.yaml` decrit un service web Node. Render lance
+`npm run build` puis `npm start` (`node dist/server.js`).
+
+1. **Offre** : Starter (ou plus). Le disque persistant, monte sur
+   `/var/data`, garde la base SQLite et les photos entre deux
+   deploiements. Sans ce disque, les signalements disparaissent a
+   chaque redemarrage.
+2. **Region** : Francfort, la plus proche proposee par Render.
+   Ce n'est pas un hebergement en France.
+3. **Node.js** : 22, pour `node:sqlite` (Node >= 22.5).
+4. **Variables demandees a la creation** : `ADMIN_DEFAULT_PASSWORD`
+   (different du mot de passe d'exemple) et `SESSION_SECRET` (genere
+   par Render). `TRUST_PROXY_HOPS` vaut 1, le proxy Render est devant
+   l'application.
+5. **Apres la mise en ligne** : ouvrir l'URL `*.onrender.com`, se
+   connecter avec `admin` et le mot de passe choisi, puis le changer
+   dans l'espace agent.
+
 ---
 
 ## 5. Securite mise en oeuvre

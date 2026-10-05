@@ -1,0 +1,33 @@
+# Service web Node.js pour Render.
+# La base SQLite et les photos sont sur un disque persistant :
+# sans lui, elles sont effacees a chaque deploiement.
+services:
+  - type: web
+    name: mairieconnect
+    runtime: node
+    region: frankfurt
+    plan: starter
+    buildCommand: npm install --include=dev && npm run build
+    startCommand: npm start
+    healthCheckPath: /
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_VERSION
+        value: "22"
+      - key: TRUST_PROXY_HOPS
+        value: "1"
+      - key: DB_PATH
+        value: /var/data/mairieconnect.db
+      - key: UPLOAD_DIR
+        value: /var/data/uploads
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: ADMIN_DEFAULT_USERNAME
+        value: admin
+      - key: ADMIN_DEFAULT_PASSWORD
+        sync: false
+    disk:
+      name: mairieconnect-data
+      mountPath: /var/data
+      sizeGB: 1

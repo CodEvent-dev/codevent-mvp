@@ -3,9 +3,8 @@
  * Initialise la base de donnees, le compte admin par defaut, la purge
  * RGPD automatique planifiee, puis demarre le serveur HTTP Express.
  *
- * En production, ce processus Node.js est place derriere Apache/Nginx
- * (reverse-proxy) qui gere le certificat HTTPS (cf. README.md, section
- * deploiement o2switch).
+ * En production, ce processus Node.js est place derriere un
+ * reverse-proxy qui gere le certificat HTTPS (o2switch ou Render).
  */
 import { env } from "./config/env";
 import { initDatabase } from "./config/database";
@@ -20,7 +19,7 @@ async function bootstrap(): Promise<void> {
 
   const app = createApp();
 
-  app.listen(env.PORT, () => {
+  app.listen(env.PORT, "0.0.0.0", () => {
     console.log(
       `[MairieConnect] Serveur demarre sur http://localhost:${env.PORT} ` +
         `(environnement: ${env.NODE_ENV}, commune: ${env.COMMUNE_NAME})`
